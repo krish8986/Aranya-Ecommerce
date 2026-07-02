@@ -5,12 +5,17 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import moment from "moment";
 
+
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [auth, setAuth] = useAuth();
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("/api/v1/auth/orders");
+      const { data } = await axios.get("/api/v1/auth/orders", {
+        headers: {
+    Authorization: auth?.token
+  }
+      });
       setOrders(data);
     } catch (error) {
       console.log(error);
@@ -64,6 +69,7 @@ const Orders = () => {
                             alt={p.name}
                             width="100px"
                             height={"100px"}
+                            loading="lazy"
                           />
                         </div>
                         <div className="col-md-8">

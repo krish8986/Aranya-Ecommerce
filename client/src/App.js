@@ -24,7 +24,15 @@ import Categories from "./pages/Categories";
 import CategoryProduct from "./pages/CategoryProduct";
 import CartPage from "./pages/CartPage";
 import AdminOrders from "./pages/Admin/AdminOrders";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import { useEffect } from "react";
+import { initGA, trackPageview } from "./analytics";
+
 function App() {
+  useEffect(() => {
+    initGA();
+    trackPageview(window.location.pathname + window.location.search);
+  }, []);
   return (
     <>
       <Routes>
@@ -55,6 +63,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/policy" element={<Policy />} />
         <Route path="*" element={<Pagenotfound />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
       </Routes>
     </>
   );

@@ -137,8 +137,17 @@
   margin-top: 100px !important;
 }
 
+/* .dark-mode .dashboard, .dashboard-menu h4 { */
+  /* color:green; */
+/* } */
+
 .dashboard-menu h4 {
   background-color: #434343 !important;
   color: white;
   padding: 20px 0px;
+}
+
+.card-img-top {
+  width: 100%;
+  object-fit: cover;
 }

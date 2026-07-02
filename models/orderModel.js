@@ -5,13 +5,19 @@ const orderSchema = new mongoose.Schema(
     products: [
       {
         type: mongoose.ObjectId,
+        required: true,
         ref: "Products",
       },
     ],
-    payment: {},
+
+    payment: {
+      type: Object,
+      required: true,
+    },
     buyer: {
       type: mongoose.ObjectId,
       ref: "users",
+      required: true,
     },
     status: {
       type: String,
@@ -23,3 +29,10 @@ const orderSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Order", orderSchema);
+
+
+
+
+
+
+

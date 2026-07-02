@@ -56,7 +56,7 @@ export const registerController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Errro in Registeration",
+      message: "Error in Registeration",
       error,
     });
   }
@@ -164,12 +164,12 @@ export const testController = (req, res) => {
   }
 };
 
-//update prfole
+//update profile--
 export const updateProfileController = async (req, res) => {
   try {
     const { name, email, password, address, phone } = req.body;
     const user = await userModel.findById(req.user._id);
-    //password
+    //password--
     if (password && password.length < 6) {
       return res.json({ error: "Passsword is required and 6 character long" });
     }
@@ -201,13 +201,21 @@ export const updateProfileController = async (req, res) => {
 
 //orders
 export const getOrdersController = async (req, res) => {
+
+  console.log("📢 getOrdersController called");
   try {
+    // DB query se pehle
+    console.log("User:", req.user);
+
     const orders = await orderModel
       .find({ buyer: req.user._id })
       .populate("products", "-photo")
       .populate("buyer", "name");
+
+      console.log("Orders fetched:", orders.length);
     res.json(orders);
   } catch (error) {
+    console.error("❌ Error in getOrdersController:", error);
     console.log(error);
     res.status(500).send({
       success: false,
@@ -224,8 +232,10 @@ export const getAllOrdersController = async (req, res) => {
       .populate("products", "-photo")
       .populate("buyer", "name")
       .sort({ createdAt: "-1" });
+      
     res.json(orders);
   } catch (error) {
+    
     console.log(error);
     res.status(500).send({
       success: false,
@@ -250,7 +260,7 @@ export const orderStatusController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error While Updateing Order",
+      message: "Error While Updating Order",
       error,
     });
   }

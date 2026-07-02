@@ -1,0 +1,436 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap');
+
+/* Phase 1 - Step 1 - Global Font + Reset */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Links and text default */
+a, p, span, h1, h2, h3, h4, h5, h6 {
+  color: #333;
+}
+
+/* Dark Mode Link */
+.dark-mode a, .dark-mode p, .dark-mode span, .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6 {
+  color: #f1f1f1;
+}
+
+
+
+/* Phase 1 - Step 4 - Navbar Polishing */
+.navbar {
+  background: linear-gradient(to right, #00b09b, #96c93d);
+  /* padding: 12px 20px; */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.navbar .nav-link {
+  color: #ffffff;
+  /* margin: 0 12px; */
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.navbar .nav-link:hover {
+  color: #ffefba;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-item:hover {
+  background-color: #96c93d;
+  color: #fff;
+}
+
+
+/* Phase 1 - Step 4 - Footer Polishing */
+.footer {
+  background: linear-gradient(to right, #434343, #000000);
+  color: #f8f9fa;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.footer a {
+  color: #ffefba;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: 500;
+}
+
+.footer a:hover {
+  color: #ffffff;
+  border-bottom: 1px solid #ffefba;
+}
+
+
+/* step 2 */
+/* Phase 1 - Step 2 - Product Card Styling */
+
+/* .card { */
+  /* width: 18rem; */
+  /* border-radius: 10px; */
+  /* overflow: hidden; */
+  /* box-shadow: 0 4px 8px rgba(0,0,0,0.08); */
+  /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
+  /* background: #fff; */
+  /* color:#000; */
+/* } */
+/*  */
+/* .card:hover { */
+  /* transform: translateY(-5px); */
+  /* box-shadow: 0 8px 16px rgba(0,0,0,0.12); */
+/* } */
+/*  */
+/* .card-img-top { */
+  /* height: 250px; */
+  /* object-fit: cover; */
+  /* transition: transform 0.3s ease; */
+/* } */
+/*  */
+/* .card:hover .card-img-top { */
+  /* transform: scale(1.05); */
+/* } */
+/*  */
+/* .card-body { */
+  /* padding: 15px; */
+/* } */
+/*  */
+/* .card-title { */
+  /* font-weight: 600; */
+  /* margin-bottom: 10px; */
+/* } */
+
+/* .card-price { */
+  /* color: green; */
+  /* font-weight: bold; */
+/* } */
+/*  */
+/* .card-text { */
+  /* font-size: 14px; */
+  /* color: #555; */
+/* } */
+/*  */
+/* .btn { */
+  /* font-size: 14px; */
+  /* font-weight: 600; */
+  /* transition: background-color 0.3s ease, color 0.3s ease; */
+/* } */
+/*  */
+/* .btn-info { */
+  /* background-color: #17a2b8; */
+  /* color: white; */
+  /* border: none; */
+/* } */
+/*  */
+/* .btn-info:hover { */
+  /* background-color: #138496; */
+/* } */
+/*  */
+/* .btn-dark { */
+  /* background-color: #343a40; */
+  /* color: white; */
+  /* border: none; */
+/* } */
+/*  */
+/* .btn-dark:hover { */
+  /* background-color: #1d2124; */
+/* } */
+
+
+
+/* DARK MODE FIXES */
+.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+.dark-mode .card {
+  background-color: #1e1e1e;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .navbar,
+.dark-mode .footer {
+  background: #1f1f1f;
+  color: #fff;
+}
+
+/* ✅ Fix filter section text color */
+.dark-mode label,
+.dark-mode .filters h4 {
+  color: #f1f1f1 !important;
+}
+
+/* ✅ Fix Hello Krishna Kumar heading */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: white !important;
+}
+
+/* Optional: Force paragraph and span text too */
+.dark-mode p,
+.dark-mode span {
+  color: white;
+}
+
+/* ✅ Fix buttons */
+.dark-mode .btn {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+}
+
+.dark-mode .btn:hover {
+  background-color: #555;
+}
+
+/* ✅ Optional: style form input placeholder and text */
+.dark-mode input,
+.dark-mode textarea {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+  border: 1px solid #333;
+}
+
+
+
+.dark-mode .form-control {
+    background-color:#fff;
+}
+
+
+
+/* DARK MODE */
+.dark-mode .navbar {
+  background: #1f1f1f;
+  color: #ffffff;
+}
+
+.dark-mode .navbar a,
+.dark-mode .navbar .nav-link,
+.dark-mode .navbar .navbar-brand,
+.dark-mode .dropdown-menu,
+.dark-mode .dropdown-item {
+  color: #ffffff !important;
+}
+
+/* Optional hover effect for links */
+.dark-mode .navbar a:hover,
+.dark-mode .navbar .nav-link:hover,
+.dark-mode .navbar .navbar-brand:hover,
+.dark-mode .dropdown-item:hover {
+  color: #ffefba !important;
+}
+
+/* For dropdown background */
+.dark-mode .dropdown-menu {
+  background-color: #1f1f1f;
+  border: 1px solid #555;
+}
+
+.dark-mode .dropdown-item:hover {
+  background-color: #333;
+}
+
+
+
+/* Floating Cart Button */
+.floating-cart {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: #000;
+  color: #fff;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.floating-cart:hover {
+  transform: scale(1.1);
+  background: linear-gradient(to right, #434343, #000);
+}
+
+/* Floating cart dark mode */
+.dark-mode .floating-cart {
+  background-color: #333;
+  color: #f1f1f1;
+}
+
+
+
+/* Payment Success Styling */
+h1 {
+  font-size: 48px;
+  color: green;
+}
+
+
+
+
+/* scroll---- */
+.scroll-to-top {
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  cursor: pointer;
+  z-index: 1000;
+  color: #000;
+}
+
+.scroll-to-top:hover {
+  color: #555;
+}
+
+.dark-mode .scroll-to-top {
+  color: #fff;
+}
+
+
+
+.home-page {
+  margin-top: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+
+
+/* Phase 1 - Step 3 - Sidebar Filters */
+.filters {
+  background: linear-gradient(to right, #00b09b, #96c93d);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+  margin-top: 80px;
+  /* margin-left: 10px; */
+}
+
+.dark-mode .filters {
+    background-color:#555;
+}
+.filters h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
+}
+
+.filters .ant-checkbox-wrapper,
+.filters .ant-radio-wrapper {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.filters button {
+  background-color: #dc3545;
+  color: white;
+  font-weight: 600;
+  border: none;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+}
+
+.filters button:hover {
+  background-color: #c82333;
+}
+
+
+button, .btn {
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover, .btn:hover {
+  transform: scale(1.03);
+}
+
+:root {
+  --primary-color: #2C7865;
+  --secondary-color: #90D26D;
+}
+
+.btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn:hover {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+
+@media (max-width: 768px) {
+  .home-page, .category {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card {
+    width: 90% !important;
+  }
+
+  .filters {
+    margin-top: 20px;
+  }
+}
+
+
+.list-group-item {
+  background: linear-gradient(to right, #00b09b, #96c93d);
+  border:grey;
+  font-weight: bold;
+}
+
+.list-group-item:hover {
+  color: #ffefba;
+}
+
+.dark-mode .list-group-item {
+  color: black;
+  font-weight: bold;
+  background: linear-gradient(to right, #00b09b, #96c93d);
+  border:none;
+}
+
+.dark-mode .list-group-item:hover {
+  color: #ffefba;
+}
+

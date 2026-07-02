@@ -4,6 +4,7 @@ import Layout from "./../../components/Layouts/Layout";
 import { useAuth } from "../../context/auth";
 import toast from "react-hot-toast";
 import axios from "axios";
+
 const Profile = () => {
   //context
   const [auth, setAuth] = useAuth();

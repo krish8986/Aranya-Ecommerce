@@ -8,6 +8,9 @@ import toast from "react-hot-toast";
 import Layout from "./../components/Layouts/Layout";
 import { AiOutlineReload } from "react-icons/ai";
 import "../styles/Homepage.css";
+import ProductSkeleton from "../components/Loader/ProductSkeleton";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -18,12 +21,12 @@ const HomePage = () => {
   const [radio, setRadio] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   //get all cat
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("/api/v1/category/get-category");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -32,32 +35,34 @@ const HomePage = () => {
     }
   };
 
-  useEffect(() => {
-    getAllCategory();
-    getTotal();
-  }, []);
   //get products
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
-      setLoading(false);
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
       setProducts(data.products);
-    } catch (error) {
       setLoading(false);
+    } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
   //getTOtal COunt
   const getTotal = async () => {
     try {
-      const { data } = await axios.get("/api/v1/product/product-count");
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
     }
   };
+
+ useEffect(() => {
+   getAllCategory();
+   getTotal();
+   getAllProducts();
+ }, []);
 
   useEffect(() => {
     if (page === 1) return;
@@ -68,8 +73,9 @@ const HomePage = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
+      setProducts((prev) => [...prev, ...data.products]);
       setLoading(false);
-      setProducts([...products, ...data?.products]);
+      // setProducts([...products, ...data?.products]);
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -102,18 +108,27 @@ const HomePage = () => {
         radio,
       });
       setProducts(data?.products);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
   return (
-    <Layout title={"ALl Products - Best offers "}>
+    // <Layout title={"All Products - Best offers "}>
+    <Layout
+  title={"Aranya - All Products | Eco-Friendly & Biodegradable"}
+  description={"Discover premium biodegradable notebooks, tableware, and more. Sustainable products for a better future from Aranya."}
+  keywords={"biodegradable, eco-friendly, notebooks, tableware, aranya products, sustainable living"}
+  author={"Krishna Kumar"}
+>
       {/* banner image */}
-      <img
+      <LazyLoadImage
         src="/images/banner.jpg"
         className="banner-img"
         alt="bannerimage"
         width={"100%"}
+        loading="lazy"
       />
       {/* banner image */}
       <div className="container-fluid row mt-3 home-page">
@@ -151,6 +166,10 @@ const HomePage = () => {
         </div>
         <div className="col-md-9 ">
           <h1 className="text-center">All Products</h1>
+
+          {loading ? (
+            <ProductSkeleton cards={8} />
+          ) : (
           <div className="d-flex flex-wrap">
             {products?.map((p) => (
               <div className="card m-2" key={p._id}>
@@ -158,6 +177,7 @@ const HomePage = () => {
                   src={`/api/v1/product/product-photo/${p._id}`}
                   className="card-img-top"
                   alt={p.name}
+                  loading="lazy"
                 />
                 <div className="card-body">
                   <div className="card-name-price">
@@ -197,8 +217,10 @@ const HomePage = () => {
               </div>
             ))}
           </div>
+          )}
+
           <div className="m-2 p-3">
-            {products && products.length < total && (
+            {products.length < total && (
               <button
                 className="btn loadmore"
                 onClick={(e) => {
@@ -210,7 +232,7 @@ const HomePage = () => {
                   "Loading ..."
                 ) : (
                   <>
-                    {" "}
+                    {/* {" "} */}
                     Loadmore <AiOutlineReload />
                   </>
                 )}

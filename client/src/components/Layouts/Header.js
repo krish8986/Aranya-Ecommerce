@@ -82,6 +82,7 @@ import SearchInput from "../Form/SearchInput";
 import useCategory from "../../hooks/useCategory";
 import { useCart } from "../../context/cart";
 import {Badge} from "antd"
+import { GiTreeBranch } from "react-icons/gi";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
@@ -98,7 +99,7 @@ const Header = () => {
   };
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg">
         <div className="container-fluid">
           <button
             className="navbar-toggler"
@@ -112,9 +113,18 @@ const Header = () => {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+            {/* <Link to="/" className="navbar-brand"> */}
+              {/* 🛒 Aranya - Weave Your Tale */}
+            {/* </Link> */}
+
             <Link to="/" className="navbar-brand">
-              🛒 Aranya - Weave Your Tale
-            </Link>
+  <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", fontWeight: "700" }}><GiTreeBranch style={{ fontSize: "30px", marginRight: "8px" }} /> Aranya
+  </span>
+  <span style={{ fontSize: "12px", fontStyle: "italic", marginLeft: "5px", display: "block", color: "#ffefba" }}>
+    Weave Your Tale
+  </span>
+</Link>
+
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <SearchInput />
               <li className="nav-item">

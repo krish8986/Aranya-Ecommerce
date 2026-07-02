@@ -8,12 +8,26 @@ export const requireSignIn = async (req, res, next) => {
             req.headers.authorization,
             process.env.JWT_SECRET
         );
-        req.user = decode;
+        // req.user = decode;
+        // next();
+    // } catch (error) {
+        // console.log(error);
+    // }
+// };
+
+        //fresh user fetch from DB---
+        const user = await userModel.findById(decode._id).select("-password");
+        if (!user) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        req.user = user;
         next();
     } catch (error) {
         console.log(error);
+        res.status(401).json({ message: "Unauthorized" });
     }
-};
+   };
 
 
 

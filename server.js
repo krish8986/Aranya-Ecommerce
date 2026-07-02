@@ -9,6 +9,10 @@ import productRoutes from "./routes/productRoutes.js";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import paymentRoute from './routes/paymentRoute.js';
+import orderRoutes from "./routes/orderRoutes.js";
+import "./config/redis.js";
+// import orderRoutes from "./routes/orderRoutes.js";
 
 //configure env
 dotenv.config();
@@ -24,6 +28,7 @@ app.use(cors());
 app.use(helmet()); // 👉 Security headers
 app.use(express.json());
 app.use(morgan("dev"));
+app.set("trust proxy", 1);
 
 // Rate limiting (to prevent abuse / DoS)
 const limiter = rateLimit({
@@ -38,6 +43,11 @@ app.use(limiter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use('/api/v1/payment', paymentRoute);
+app.use("/api/v1/orders", orderRoutes);
+// app.use("/api/orders", orderRoutes);
+// app.use("/api/orders", orderRoutes);
+
 
 //rest api
 app.get("/", (req, res) => {

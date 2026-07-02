@@ -3,13 +3,21 @@ import Layout from "./../components/Layouts/Layout";
 import { BiMailSend, BiPhoneCall, BiSupport } from "react-icons/bi";
 const Contact = () => {
   return (
-    <Layout title={"contact us - Aranya"}>
+    // <Layout title={"contact us - Aranya"}>
+    <Layout
+  title={"Contact Aranya | Get in Touch"}
+  description={"Have questions or bulk orders? Contact Aranya for premium biodegradable and eco-friendly products."}
+  keywords={"contact aranya, get in touch, biodegradable, bulk orders, eco-friendly contact"}
+  author={"Krishna Kumar"}
+>
+
       <div className="row contactus ">
         <div className="col-md-6 ">
           <img
             src="/images/contactus.jpg"
             alt="contactus"
             style={{ width: "100%" }}
+            loading="lazy"
           />
         </div>
         <div className="col-md-4">

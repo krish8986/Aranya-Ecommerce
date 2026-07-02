@@ -15,7 +15,7 @@ const ForgetPassword = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-          const res = await axios.post("/api/v1/auth/forget-password",
+          const res = await axios.post(`${process.env.REACT_APP_API}/api/v1/auth/forget-password`,
               { email, newPassword, answer }
           );
           if(res && res.data.success) {
@@ -31,7 +31,14 @@ const ForgetPassword = () => {
       }
     };
     return (
-        <Layout title={"Forget Password - Aranya"}>
+        // <Layout title={"Forget Password - Aranya"}>
+        <Layout
+  title={"Forget Password | Aranya"}
+  description={"Login or create your Aranya account for easy shopping of eco-friendly products."}
+  keywords={"login aranya, register aranya, eco-friendly shopping"}
+  author={"Krishna Kumar"}
+>
+
               <div className=" form-container ">
                  <form onSubmit={handleSubmit}>
                   <h4 className="title">Reset Password</h4>

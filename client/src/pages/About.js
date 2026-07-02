@@ -3,13 +3,21 @@ import Layout from "./../components/Layouts/Layout";
 
 const About = () => {
   return (
-    <Layout title={"About us - Aranya"}>
+    // <Layout title={"About us - Aranya"}>
+    <Layout
+  title={"About Aranya | Sustainable & Eco-Friendly Brand"}
+  description={"Learn about Aranya - our mission to provide eco-friendly biodegradable alternatives like notebooks, tableware, and more."}
+  keywords={"about aranya, eco-friendly brand, sustainable products, biodegradable products, krishna kumar"}
+  author={"Krishna Kumar"}
+>
+
       <div className="row contactus ">
         <div className="col-md-6 ">
           <img
             src="/images/aboutus.jpg"
             alt="contactus"
-            style={{ width: "100%" }}
+            style={{ width: "90%" }}
+            loading="lazy"
           />
         </div>
         <div className="col-md-4">

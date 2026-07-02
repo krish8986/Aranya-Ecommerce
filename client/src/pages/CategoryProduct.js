@@ -3,6 +3,9 @@ import Layout from "../components/Layouts/Layout";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/CategoryProductStyles.css";
 import axios from "axios";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+
 const CategoryProduct = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -15,7 +18,7 @@ const CategoryProduct = () => {
   const getPrductsByCat = async () => {
     try {
       const { data } = await axios.get(
-        `/api/v1/product/product-category/${params.slug}`
+        `${process.env.REACT_APP_API}/api/v1/product/product-category/${params.slug}`
       );
       setProducts(data?.products);
       setCategory(data?.category);
@@ -25,7 +28,14 @@ const CategoryProduct = () => {
   };
 
   return (
-    <Layout>
+    // <Layout>
+    <Layout
+  title={"Category Wise Products | Aranya"}
+  description={"Explore products based on categories like notebooks, tableware, and eco-friendly goods at Aranya."}
+  keywords={"category wise products, biodegradable notebooks, eco-friendly tableware, aranya"}
+  author={"Krishna Kumar"}
+>
+
       <div className="container mt-3 category">
         <h4 className="text-center">Category - {category?.name}</h4>
         <h6 className="text-center">{products?.length} result found </h6>
@@ -34,10 +44,11 @@ const CategoryProduct = () => {
             <div className="d-flex flex-wrap">
               {products?.map((p) => (
                 <div className="card m-2" key={p._id}>
-                  <img
+                  <LazyLoadImage
                     src={`/api/v1/product/product-photo/${p._id}`}
                     className="card-img-top"
                     alt={p.name}
+                    loading="lazy"
                   />
                   <div className="card-body">
                     <div className="card-name-price">

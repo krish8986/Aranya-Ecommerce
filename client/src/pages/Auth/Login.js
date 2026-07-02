@@ -39,7 +39,13 @@ const handleSubmit = async (e) => {
     }
 };
   return (
-    <Layout title=" Business Inquiry - Aranya">
+    // <Layout title=" Business Inquiry - Aranya">
+    <Layout
+  title={"Login/Register | Aranya"}
+  description={"Login or create your Aranya account for easy shopping of eco-friendly products."}
+  keywords={"login aranya, register aranya, eco-friendly shopping"}
+  author={"Krishna Kumar"}
+>
     <div className=" form-container ">
      <form onSubmit={handleSubmit}>
       <h4 className="title">Business Inquiry Login</h4>

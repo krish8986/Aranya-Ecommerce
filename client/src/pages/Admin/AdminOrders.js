@@ -21,7 +21,11 @@ const AdminOrders = () => {
   const [auth, setAuth] = useAuth();
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("/api/v1/auth/all-orders");
+      const { data } = await axios.get("/api/v1/orders/all-orders", {
+        headers: {
+          Authorization: auth?.token
+        }
+      });
       setOrders(data);
     } catch (error) {
       console.log(error);
@@ -34,7 +38,7 @@ const AdminOrders = () => {
 
   const handleChange = async (orderId, value) => {
     try {
-      const { data } = await axios.put(`/api/v1/auth/order-status/${orderId}`, {
+      const { data } = await axios.put(`/api/v1/orders/order-status/${orderId}`, {
         status: value,
       });
       getOrders();
@@ -82,7 +86,7 @@ const AdminOrders = () => {
                       </td>
                       <td>{o?.buyer?.name}</td>
                       <td>{moment(o?.createAt).fromNow()}</td>
-                      <td>{o?.payment.success ? "Success" : "Failed"}</td>
+                      <td>{o?.payment?.status === "Success" ? "Success" : "Failed"}</td>
                       <td>{o?.products?.length}</td>
                     </tr>
                   </tbody>
@@ -97,6 +101,7 @@ const AdminOrders = () => {
                           alt={p.name}
                           width="100px"
                           height={"100px"}
+                          loading="lazy"
                         />
                       </div>
                       <div className="col-md-8">

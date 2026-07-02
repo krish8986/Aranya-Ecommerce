@@ -148,6 +148,7 @@ const UpdateProduct = () => {
                       alt="product_photo"
                       height={"200px"}
                       className="img img-responsive"
+                      loading="lazy"
                     />
                   </div>
                 ) : (
@@ -157,6 +158,7 @@ const UpdateProduct = () => {
                       alt="product_photo"
                       height={"200px"}
                       className="img img-responsive"
+                      loading="lazy"
                     />
                   </div>
                 )}

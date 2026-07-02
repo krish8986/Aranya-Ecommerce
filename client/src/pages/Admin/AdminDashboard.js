@@ -5,7 +5,13 @@ import { useAuth } from "../../context/auth";
 const AdminDashboard = () => {
   const [auth] = useAuth();
   return (
-    <Layout>
+    // <Layout>
+    <Layout
+  title={"Admin Dashboard | Aranya"}
+  description={"Manage products, categories, orders from the Aranya Admin Dashboard. Control your eco-friendly business."}
+  keywords={"admin dashboard, manage aranya products, eco-friendly business, biodegradable admin panel"}
+  author={"Krishna Kumar"}
+>
       <div className="container-fluid m-3 p-3">
         <div className="row">
           <div className="col-md-3">

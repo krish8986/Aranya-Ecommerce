@@ -20,6 +20,7 @@ const Search = () => {
                   src={`/api/v1/product/product-photo/${p._id}`}
                   className="card-img-top"
                   alt={p.name}
+                  loading="lazy"
                 />
                 <div className="card-body">
                   <h5 className="card-title">{p.name}</h5>
