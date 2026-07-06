@@ -560,19 +560,28 @@ npm test
 
 # 📸 Screenshots
 
-> Screenshots will be added after deployment.
+## 📸 Screenshots
 
-Suggested screenshots:
+### 🏠 Home Page
+![Home Page](docs/screenshots/home.png)
 
-- Home Page
-- Product Listing
-- Product Details
-- Shopping Cart
-- Login Page
-- Register Page
-- Admin Dashboard
-- Analytics Dashboard
-- Orders Page
+### 🛍️ Products
+![Products](docs/screenshots/products.png)
+
+### 📦 Product Details
+![Product Details](docs/screenshots/product-details.png)
+
+### 🛒 Shopping Cart
+![Cart](docs/screenshots/cart.png)
+
+### 📊 Admin Dashboard
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+
+### ⚙️ Admin Products
+![Admin Products](docs/screenshots/admin-products.png)
+
+###    Jest + Supertest 
+![Jest + Supertest](docs/screenshots/jestSupertest.png)
 
 Example:
 
