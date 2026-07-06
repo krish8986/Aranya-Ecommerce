@@ -27,6 +27,8 @@ import AdminOrders from "./pages/Admin/AdminOrders";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import { useEffect } from "react";
 import { initGA, trackPageview } from "./analytics";
+import Analytics from "./pages/Admin/Analytics";
+import VerifyOTP from "./pages/Auth/VerifyOTP";
 
 function App() {
   useEffect(() => {
@@ -55,8 +57,13 @@ function App() {
           <Route path="admin/products" element={<Products />} />
           <Route path="admin/users" element={<Users />} />
           <Route path="admin/orders" element={<AdminOrders />} />
+          <Route path="admin/analytics" element={<Analytics />} />
         </Route>
         <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verify-otp" element={<VerifyOTP />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />

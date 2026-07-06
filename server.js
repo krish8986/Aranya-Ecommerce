@@ -11,56 +11,101 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import paymentRoute from './routes/paymentRoute.js';
 import orderRoutes from "./routes/orderRoutes.js";
-import "./config/redis.js";
-// import orderRoutes from "./routes/orderRoutes.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import "./config/cloudinary.js";
+import cookieParser from "cookie-parser";
+import logger from "./config/logger.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
-//configure env
+// configure env
 dotenv.config();
 
-//databse config
+// database config
 connectDB();
 
-//rest object
+// rest object
 const app = express();
+const httpServer = createServer(app);
 
-//middelwares
+// Socket.io setup
+const io = new Server(httpServer, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+// Socket.io connection
+io.on("connection", (socket) => {
+  console.log("User connected via Socket.io".bgGreen.white);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected".bgRed.white);
+  });
+});
+
+// Export io to use in other files
+export { io };
+
+// middlewares
+app.set("trust proxy", 1);
 app.use(cors());
-app.use(helmet()); // 👉 Security headers
+app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
-app.set("trust proxy", 1);
+app.use(cookieParser());
 
-// Rate limiting (to prevent abuse / DoS)
+// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use(limiter);
 
-//routes
+// Strict limiter for auth routes (brute-force protection)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // sirf 5 attempts
+  message: { success: false, message: "Too many attempts, please try again after 15 minutes" },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use('/api/v1/payment', paymentRoute);
 app.use("/api/v1/orders", orderRoutes);
-// app.use("/api/orders", orderRoutes);
-// app.use("/api/orders", orderRoutes);
+app.use("/api/v1/auth/login", authLimiter);
+app.use("/api/v1/auth/register", authLimiter);
 
-
-//rest api
+// rest api
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");
 });
 
-//PORT
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve React build in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
+
+// PORT
 const PORT = process.env.PORT || 8000;
 
-//run listen
-app.listen(PORT, () => {
-  console.log(
-    `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan
-      .white
-  );
+// run listen — httpServer instead of app
+httpServer.listen(PORT, () => {
+  logger.info(`Server Running on ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
 });

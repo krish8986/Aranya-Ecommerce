@@ -1,81 +1,242 @@
+/* Banner fix */
+
 .banner-img {
-  margin-top: 60px;
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
-.home-page h1 {
-  color: gray;
-  font-family: "Playfair Display", serif;
+/* ===== HOMEPAGE ===== */
+.banner-img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  display: block;
 }
 
 .home-page {
-  display: flex;
-  flex-wrap: wrap;
-}
-.home-page .card {
-  background-color: rgba(128, 128, 128, 0.097);
-  width: 18rem;
-}
-.home-page .card-name-price {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  padding: 2rem 1rem;
 }
 
-.home-page .card-price {
-  color: green;
-  font-weight: bold;
+/* ===== FILTER SIDEBAR ===== */
+.filters {
+  background: #FFFFFF !important;
+  border: 1px solid #E9F5EE !important;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  height: fit-content;
+  position: sticky;
+  top: 80px;
+  border: 1px solid #E9F5EE;
 }
-.home-page button {
-  border-radius: 0;
-  width: 100%;
-  border-top-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+
+.filters h4 {
+  color: #1B4332;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #D8F3DC;
+}
+
+.filters .ant-checkbox-wrapper {
+  margin: 6px 0 !important;
   font-size: 14px;
-  font-weight: bold;
+  color: #374151;
 }
 
-.home-page .card-text {
-  color: rgb(90, 89, 89);
+.filters .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #2D6A4F !important;
+  border-color: #2D6A4F !important;
 }
 
-.home-page .card img:hover {
-  transform: scale(0.9);
+.filters .ant-radio-wrapper {
+  margin: 6px 0 !important;
+  font-size: 14px;
+  color: #374151;
 }
 
-.home-page .card-img-top {
-  height: 300px !important;
+.filters .ant-radio-checked .ant-radio-inner {
+  border-color: #2D6A4F !important;
 }
-/* ==================
-filters
-============== */
-/* .filters h4 { */
-  /* margin-top: 100px; */
-  /* color: gray !important; */
-  /* border-bottom: 1px solid rgba(128, 128, 128, 0.337); */
-/* } */
 
-/* .ant-checkbox-wrapper:first-of-type { */
-  /* margin-left: 8px; */
-/* } */
+.filters .ant-radio-inner::after {
+  background-color: #2D6A4F !important;
+}
 
-/* .ant-checkbox-wrapper { */
-  /* margin: 2px; */
-/* } */
-/* .ant-radio-wrapper { */
-  /* margin-bottom: 5px !important; */
-  /* margin-left: 10px; */
-/* } */
+/* Reset button */
+.filters .btn-danger {
+  background: #fff !important;
+  color: #DC2626 !important;
+  border: 1.5px solid #DC2626 !important;
+  border-radius: 8px !important;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 1rem;
+  transition: all 0.2s;
+}
 
-/* .filters button { */
-  /* background-color: black; */
-  /* width: 100%; */
-  /* border: none; */
-  /* border-radius: 0; */
-  /* margin-top: 20px; */
-/* } */
+.filters .btn-danger:hover {
+  background: #DC2626 !important;
+  color: white !important;
+}
 
-/* .loadmore { */
-  /* color: green; */
-  /* font-weight: bold; */
-  /* font-size: 20px !important; */
-/* } */
+/* ===== PRODUCTS SECTION ===== */
+.col-md-9 h1 {
+  color: #1B4332;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.col-md-9 h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #52B788;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+/* ===== PRODUCT CARDS ===== */
+.card {
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07) !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+  width: 220px !important;
+  background: #FFFFFF !important;
+}
+
+.card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 12px 30px rgba(45, 106, 79, 0.15) !important;
+}
+
+.card-img-top {
+  height: 200px !important;
+  object-fit: cover !important;
+  transition: transform 0.3s ease !important;
+}
+
+.card:hover .card-img-top {
+  transform: scale(1.05) !important;
+}
+
+.card-body {
+  padding: 1rem !important;
+}
+
+.card-name-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #1A1A1A !important;
+  margin: 0 !important;
+}
+
+.card-price {
+  color: #2D6A4F !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+.card-text {
+  font-size: 12px !important;
+  color: #6B7280 !important;
+  margin-bottom: 0.75rem !important;
+  line-height: 1.5 !important;
+}
+
+/* Card buttons */
+.card .btn-info {
+  background: transparent !important;
+  border: 1.5px solid #52B788 !important;
+  color: #2D6A4F !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  padding: 0.3rem 0.7rem !important;
+  transition: all 0.2s !important;
+}
+
+.card .btn-info:hover {
+  background: #52B788 !important;
+  color: white !important;
+}
+
+.card .btn-dark {
+  background: #1B4332 !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  padding: 0.3rem 0.7rem !important;
+  transition: all 0.2s !important;
+}
+
+.card .btn-dark:hover {
+  background: #2D6A4F !important;
+}
+
+/* ===== LOAD MORE BUTTON ===== */
+.loadmore {
+  background: #2D6A4F !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 25px !important;
+  padding: 0.6rem 2rem !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s !important;
+  display: block !important;
+  margin: 1rem auto !important;
+}
+
+.loadmore:hover {
+  background: #1B4332 !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ===== DARK MODE ===== */
+body.dark-mode {
+  background: #0F172A !important;
+  color: #E2E8F0 !important;
+}
+
+body.dark-mode .card {
+  background: #1E293B !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .card-title {
+  color: #E2E8F0 !important;
+}
+
+body.dark-mode .card-text {
+  color: #94A3B8 !important;
+}
+
+body.dark-mode .filters {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+}
+
+body.dark-mode .filters h4 {
+  color: #95D5B2 !important;
+}

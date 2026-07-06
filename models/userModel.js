@@ -1,35 +1,45 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
-        trim:true
+    name: {
+        type: String,
+        required: true,
+        trim: true
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+        type: String,
+        required: true
     },
-    phone:{
-        type:String,
-        required:true,
+    phone: {
+        type: String,
+        required: true,
     },
-    address:{
-        type:{},
-        required:true,
+    address: {
+        type: {},
+        required: true,
     },
     answer: {
         type: String,
         required: true,
     },
-    role:{
-        type:Number,
-        default:0
+    otp: {
+        type: String,
+    },
+    otpExpiry: {
+        type: Date,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    role: {
+        type: Number,
+        default: 0
     },
     subcription: {
         type: String,
@@ -47,8 +57,8 @@ const userSchema = new mongoose.Schema({
             return this.role === 2;
         }
     },
-    },
-{ timestamps:true }
+},
+    { timestamps: true }
 );
 
-export default mongoose.model("users",userSchema);
+export default mongoose.model("users", userSchema);

@@ -6,8 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import FloatingCart from "../FloatingCart";
 import ScrollToTopButton from "./ScrollToTopButton";
 
-const Layout = ({ children,title,description,keywords,author }) => {
-  // ✅ Dark Mode Code Starts --
+const Layout = ({ children, title, description, keywords, author }) => {
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("darkMode");
     return saved === "true";
@@ -21,7 +20,6 @@ const Layout = ({ children,title,description,keywords,author }) => {
     }
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
-  // ✅ Dark Mode Code Ends --
 
   return (
     <>
@@ -32,19 +30,13 @@ const Layout = ({ children,title,description,keywords,author }) => {
         <meta name="author" content={author} />
         <title>{title}</title>
       </Helmet>
-      <Header />
- 
-      {/* ✅ Dark Mode Toggle */}
-      <nav className="navbar">
-        <button
-          className="btn btn-outline-dark ms-auto me-3"
-          onClick={() => setDarkMode(!darkMode)}
-        >
-          {darkMode ? "Light Mode ☀️" : "Dark Mode 🌙"}
-        </button>
-      </nav>
 
-      <main style={{ minHeight: "70vh"}}><Toaster />{children}</main>
+      <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+
+      <main style={{ minHeight: "70vh", paddingTop: "0" }}>
+        <Toaster />
+        {children}
+      </main>
       <FloatingCart />
       <Footer />
       <ScrollToTopButton />
@@ -56,6 +48,7 @@ Layout.defaultProps = {
   title: "Aranya-biodegradable tableware, notebook",
   description: "mern stack project",
   keywords: "mern, react, node, mongodb",
-  author: "krishna kumar"
-}
+  author: "krishna kumar",
+};
+
 export default Layout;

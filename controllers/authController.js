@@ -1,5 +1,6 @@
 import userModel from "../models/userModel.js";
 import orderModel from "../models/orderModel.js";
+import { sendOTPEmail } from "../config/email.js";
 
 import { comparePassword, hashPassword } from "./../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
@@ -7,37 +8,28 @@ import JWT from "jsonwebtoken";
 export const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
-    //validations
-    if (!name) {
-      return res.send({ error: "Name is Required" });
-    }
-    if (!email) {
-      return res.send({ message: "Email is Required" });
-    }
-    if (!password) {
-      return res.send({ message: "Password is Required" });
-    }
-    if (!phone) {
-      return res.send({ message: "Phone no is Required" });
-    }
-    if (!address) {
-      return res.send({ message: "Address is Required" });
-    }
-    if (!answer) {
-      return res.send({ message: "Answer is Required" });
-    }
-    //check user
+
+    if (!name) return res.send({ error: "Name is Required" });
+    if (!email) return res.send({ message: "Email is Required" });
+    if (!password) return res.send({ message: "Password is Required" });
+    if (!phone) return res.send({ message: "Phone no is Required" });
+    if (!address) return res.send({ message: "Address is Required" });
+    if (!answer) return res.send({ message: "Answer is Required" });
+
     const exisitingUser = await userModel.findOne({ email });
-    //exisiting user
     if (exisitingUser) {
       return res.status(200).send({
         success: false,
         message: "Already Register please login",
       });
     }
-    //register user
+
     const hashedPassword = await hashPassword(password);
-    //save
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
     const user = await new userModel({
       name,
       email,
@@ -45,42 +37,102 @@ export const registerController = async (req, res) => {
       address,
       password: hashedPassword,
       answer,
+      otp,
+      otpExpiry,
+      isVerified: false,
     }).save();
+
+    await sendOTPEmail(user.email, user.name, otp);
 
     res.status(201).send({
       success: true,
-      message: "User Register Successfully",
-      user,
+      message: "Registration successful! Please verify your email with the OTP sent.",
+      userId: user._id,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error in Registeration",
+      message: "Error in registration",
       error,
     });
   }
 };
 
+// VERIFY OTP
+export const verifyOTPController = async (req, res) => {
+  try {
+    const { userId, otp } = req.body;
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    if (user.isVerified) {
+      return res.status(200).send({ success: true, message: "Already verified" });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).send({ success: false, message: "Invalid OTP" });
+    }
+
+    if (new Date() > user.otpExpiry) {
+      return res.status(400).send({ success: false, message: "OTP expired, please register again" });
+    }
+
+    user.isVerified = true;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+
+    res.status(200).send({ success: true, message: "Email verified successfully!" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error verifying OTP", error });
+  }
+};
+
+// RESEND OTP
+export const resendOTPController = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).send({ success: false, message: "User not found" });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    await sendOTPEmail(user.email, user.name, otp);
+
+    res.status(200).send({ success: true, message: "OTP resent successfully" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error resending OTP", error });
+  }
+};
+
 //POST LOGIN
+
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    //validation
+
     if (!email || !password) {
       return res.status(404).send({
         success: false,
         message: "Invalid email or password",
       });
     }
-    //check user
+
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(404).send({
         success: false,
-        message: "Email is not registerd",
+        message: "Email is not registered",
       });
     }
+
     const match = await comparePassword(password, user.password);
     if (!match) {
       return res.status(200).send({
@@ -88,13 +140,42 @@ export const loginController = async (req, res) => {
         message: "Invalid Password",
       });
     }
-    //token
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+
+    if (!user.isVerified) {
+      return res.status(403).send({
+        success: false,
+        message: "Please verify your email first",
+        userId: user._id,
+        needsVerification: true,
+      });
+    }
+
+
+    // Access token — 15 min
+    const token = JWT.sign(
+      { _id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Refresh token — 7 days
+    const refreshToken = JWT.sign(
+      { _id: user._id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Save refresh token in httpOnly cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // true in production
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+
     res.status(200).send({
       success: true,
-      message: "login successfully",
+      message: "Login successfully",
       user: {
         _id: user._id,
         name: user.name,
@@ -212,7 +293,7 @@ export const getOrdersController = async (req, res) => {
       .populate("products", "-photo")
       .populate("buyer", "name");
 
-      console.log("Orders fetched:", orders.length);
+    console.log("Orders fetched:", orders.length);
     res.json(orders);
   } catch (error) {
     console.error("❌ Error in getOrdersController:", error);
@@ -232,10 +313,10 @@ export const getAllOrdersController = async (req, res) => {
       .populate("products", "-photo")
       .populate("buyer", "name")
       .sort({ createdAt: "-1" });
-      
+
     res.json(orders);
   } catch (error) {
-    
+
     console.log(error);
     res.status(500).send({
       success: false,
@@ -262,6 +343,40 @@ export const orderStatusController = async (req, res) => {
       success: false,
       message: "Error While Updating Order",
       error,
+    });
+  }
+};
+
+// REFRESH TOKEN
+export const refreshTokenController = async (req, res) => {
+  try {
+    const { refreshToken } = req.cookies;
+
+    if (!refreshToken) {
+      return res.status(401).send({
+        success: false,
+        message: "No refresh token — please login again",
+      });
+    }
+
+    // Verify refresh token
+    const decoded = JWT.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    // Generate new access token
+    const newToken = JWT.sign(
+      { _id: decoded._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.status(200).send({
+      success: true,
+      token: newToken,
+    });
+  } catch (error) {
+    res.status(401).send({
+      success: false,
+      message: "Invalid refresh token — please login again",
     });
   }
 };

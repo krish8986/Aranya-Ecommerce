@@ -1,141 +1,31 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/Layouts/Layout";
 import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
-// import DropIn from "braintree-web-drop-in-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import "../styles/CartStyles.css";
-// import { AiFillWarning } from "react-icons/ai";
 
 const CartPage = () => {
   const [auth] = useAuth();
   const [cart, setCart] = useCart();
-  // const [clientToken, setClientToken] = useState("");
-  // const [instance, setInstance] = useState(null);
-  // const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Calculate total cart price-----
   const totalPrice = () => {
     try {
       const total = cart?.reduce((acc, item) => acc + item.price, 0);
-      return total.toLocaleString("en-IN", {
-        style: "currency",
-        currency: "INR",
-      });
+      return total.toLocaleString("en-IN", { style: "currency", currency: "INR" });
     } catch (error) {
-      console.error("Error calculating total price:", error);
       return "₹0";
     }
   };
 
-
-  // Remove item from cart--
   const removeCartItem = (pid) => {
-    try {
-      const updatedCart = cart.filter((item) => item._id !== pid);
-      setCart(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-    } catch (error) {
-      console.error("Error removing cart item:", error);
-    }
+    const updatedCart = cart.filter((item) => item._id !== pid);
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    toast.success("Item removed");
   };
-
-
-  // Fetch client token for Braintree
-  // const getToken = async () => {
-  // try {
-  // const { data } = await axios.get("/api/v1/product/braintree/token");
-  // if (data?.clientToken) {
-  // setClientToken(data.clientToken);
-  // } else {
-  // toast.error("Failed to load payment gateway. Try again.");
-  // }
-  // } catch (error) {
-  // console.error("Error fetching Braintree token:", error);
-  // toast.error("Failed to load payment gateway. Try again.");
-  // }
-  // };
-
-  // useEffect(() => {
-  // if (auth?.token) getToken();
-  // }, [auth?.token]);
-
-
-
-  // Handle payment---
-
-  // const handlePayment = async () => {
-  // if (!instance) {
-  // toast.error("Payment UI not loaded. Try again.");
-  // return;
-  // }
-
-  // try {
-  // setLoading(true);
-  // const { nonce } = await instance.requestPaymentMethod();
-
-  // const { data } = await axios.post("/api/v1/product/braintree/payment", {
-  // nonce,
-  // cart,
-  // });
-
-  // setLoading(false);
-  // setCart([]);
-  // localStorage.removeItem("cart");
-  // toast.success("Payment Completed Successfully!");
-  // navigate("/dashboard/user/orders");
-  // } catch (error) {
-  // console.error("Payment error:", error);
-  // toast.error("Payment failed. Try again.");
-  // setLoading(false);
-  // }
-  // };
-
-
-  //handle payment for razorpay----
-
-  // const handlePayment = async () => {
-  // try {
-  // const { data } = await axios.post(`${process.env.REACT_APP_API}/api/v1/payment/create-order`, {
-  // amount: cart.reduce((acc, item) => acc + item.price, 0)
-  // });
-  // 
-  // const options = {
-  // key: process.env.REACT_APP_RAZORPAY_KEY,
-  // amount: data.order.amount,
-  // currency: "INR",
-  // name: "Aranya",
-  // description: "Order Payment",
-  // order_id: data.order.id,
-  // handler: function (response) {
-  // toast.success("Payment Successful!");
-  // console.log(response);
-  // setCart([]);
-  // localStorage.removeItem("cart");
-  // navigate("/dashboard/user/orders");
-  // },
-  // prefill: {
-  // name: auth?.user?.name,
-  // email: auth?.user?.email,
-  // contact: "9999999999"
-  // },
-  // theme: {
-  // color: "#3399cc"
-  // }
-  // };
-  // 
-  // const razor = new window.Razorpay(options);
-  // razor.open();
-  // 
-  // } catch (error) {
-  // console.log(error);
-  // toast.error("Payment Failed!");
-  // }
-  // };
-
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -144,13 +34,9 @@ const CartPage = () => {
     document.body.appendChild(script);
   }, []);
 
-
-  //handlerazorpay---
-
   const handleRazorpayPayment = async () => {
     try {
       const amount = cart.reduce((acc, item) => acc + item.price, 0);
-
       const { data: order } = await axios.post(
         `${process.env.REACT_APP_API}/api/v1/product/razorpay/order`,
         { amount }
@@ -161,7 +47,7 @@ const CartPage = () => {
         amount: order.amount,
         currency: order.currency,
         name: "Aranya E-commerce",
-        description: "Test Transaction",
+        description: "Eco-Friendly Products",
         order_id: order.id,
         handler: async function (response) {
           try {
@@ -173,7 +59,6 @@ const CartPage = () => {
                 razorpay_signature: response.razorpay_signature,
               }
             );
-
             if (verifyRes.data.success) {
               await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/orders/create`,
@@ -185,22 +70,16 @@ const CartPage = () => {
                     status: "Success",
                   },
                 },
-                {
-                  headers: {
-                    Authorization: auth?.token,
-                  },
-                }
+                { headers: { Authorization: auth?.token } }
               );
-
               setCart([]);
               localStorage.removeItem("cart");
-              toast.success("Payment successful!");
+              toast.success("Payment successful! 🌿");
               navigate("/payment-success");
             } else {
               toast.error("Payment verification failed");
             }
           } catch (err) {
-            console.error("Order save error:", err);
             toast.error("Order could not be saved.");
           }
         },
@@ -209,154 +88,219 @@ const CartPage = () => {
           email: auth?.user?.email,
           contact: "9999999999",
         },
-        theme: {
-          color: "#3399cc",
-        },
+        theme: { color: "#2D6A4F" },
       };
-
       const rzp = new window.Razorpay(options);
       rzp.open();
     } catch (error) {
-      console.error("Razorpay error:", error);
       toast.error("Payment failed. Try again.");
     }
   };
 
   return (
-    // <Layout>
     <Layout
       title={"Your Cart | Aranya"}
-      description={"View and manage your cart. Shop biodegradable and sustainable products from Aranya easily."}
-      keywords={"aranya cart, eco-friendly shopping, biodegradable products, view cart"}
+      description={"View and manage your cart."}
+      keywords={"aranya cart, eco-friendly shopping"}
       author={"Krishna Kumar"}
     >
-      <div className="cart-page container">
-        <div className="row">
-          <div className="col-md-12 text-center p-2 mb-3">
-            <h2><b><i>Hello {auth?.user?.name || "Guest"}</i></b></h2>
-            <p>
-              {cart?.length
-                ? `You have ${cart.length} item(s) in your cart ${auth?.token ? "" : "— please login to checkout!"
-                }`
-                : "Your cart is empty."}
-            </p>
-          </div>
+      <div className="container py-5">
+        {/* Header */}
+        <div className="text-center mb-4">
+          <h2 style={{ color: "#1B4332", fontWeight: "700" }}>
+            🛒 Hello, {auth?.user?.name || "Guest"}!
+          </h2>
+          <p style={{ color: "#6B7280" }}>
+            {cart?.length
+              ? `You have ${cart.length} item(s) in your cart`
+              : "Your cart is empty 🌿"}
+          </p>
         </div>
 
-        <div className="row">
-          {/* Cart Items */}
-          <div className="col-md-7">
-            {cart?.map((item) => (
-              <div className="row card flex-row mb-3" key={item._id}>
-                <div className="col-md-4">
+        {cart?.length === 0 ? (
+          <div className="text-center py-5">
+            <div style={{ fontSize: "60px", marginBottom: "1rem" }}>🛒</div>
+            <h4 style={{ color: "#6B7280" }}>Your cart is empty</h4>
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                background: "#1B4332",
+                color: "#fff",
+                border: "none",
+                padding: "0.75rem 2rem",
+                borderRadius: "25px",
+                marginTop: "1rem",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+            >
+              🌿 Continue Shopping
+            </button>
+          </div>
+        ) : (
+          <div className="row g-4">
+            {/* Cart Items */}
+            <div className="col-md-8">
+              {cart?.map((item) => (
+                <div
+                  key={item._id}
+                  style={{
+                    background: "#fff",
+                    borderRadius: "16px",
+                    padding: "1rem",
+                    marginBottom: "1rem",
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
+                    border: "1px solid #E9F5EE",
+                    display: "flex",
+                    gap: "1rem",
+                    alignItems: "center",
+                  }}
+                >
                   <img
-                    src={`/api/v1/product/product-photo/${item._id}`}
-                    className="card-img-top"
+                    src={item?.photo?.url || `/api/v1/product/product-photo/${item._id}`}
                     alt={item.name}
-                    width="100%"
-                    height="130"
+                    style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "10px" }}
                     loading="lazy"
                   />
-                </div>
-                <div className="col-md-4">
-                  <p><b>{item.name}</b></p>
-                  <p>{item.description?.substring(0, 30)}...</p>
-                  <p>Price: <b>₹{item.price}</b></p>
-                </div>
-                <div className="col-md-4 cart-remove-btn">
+                  <div style={{ flex: 1 }}>
+                    <h6 style={{ fontWeight: "600", color: "#1A1A1A", marginBottom: "4px" }}>
+                      {item.name}
+                    </h6>
+                    <p style={{ fontSize: "12px", color: "#6B7280", marginBottom: "4px" }}>
+                      {item.description?.substring(0, 50)}...
+                    </p>
+                    <span style={{ color: "#2D6A4F", fontWeight: "700", fontSize: "15px" }}>
+                      ₹{item.price.toLocaleString()}
+                    </span>
+                  </div>
                   <button
-                    className="btn btn-danger"
                     onClick={() => removeCartItem(item._id)}
+                    style={{
+                      background: "#FEF2F2",
+                      border: "1px solid #FECACA",
+                      color: "#DC2626",
+                      borderRadius: "8px",
+                      padding: "0.4rem 0.8rem",
+                      fontSize: "12px",
+                      cursor: "pointer",
+                      fontWeight: "500",
+                    }}
                   >
                     Remove
                   </button>
                 </div>
+              ))}
+            </div>
+
+            {/* Order Summary */}
+            <div className="col-md-4">
+              <div style={{
+                background: "#fff",
+                borderRadius: "16px",
+                padding: "1.5rem",
+                boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
+                border: "1px solid #E9F5EE",
+                position: "sticky",
+                top: "90px",
+              }}>
+                <h5 style={{ color: "#1B4332", fontWeight: "700", marginBottom: "1.25rem" }}>
+                  Order Summary
+                </h5>
+
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                  <span style={{ color: "#6B7280", fontSize: "14px" }}>Items ({cart.length})</span>
+                  <span style={{ fontWeight: "600" }}>{totalPrice()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                  <span style={{ color: "#6B7280", fontSize: "14px" }}>Delivery</span>
+                  <span style={{ color: "#2D6A4F", fontWeight: "600" }}>Free 🌿</span>
+                </div>
+
+                <hr style={{ borderColor: "#E9F5EE" }} />
+
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+                  <span style={{ fontWeight: "700", fontSize: "16px" }}>Total</span>
+                  <span style={{ fontWeight: "700", fontSize: "16px", color: "#1B4332" }}>{totalPrice()}</span>
+                </div>
+
+                {/* Address */}
+                {auth?.user?.address ? (
+                  <div style={{
+                    background: "#F8FAF9",
+                    borderRadius: "10px",
+                    padding: "0.85rem",
+                    marginBottom: "1rem",
+                    border: "1px solid #E9F5EE",
+                  }}>
+                    <div style={{ fontSize: "11px", color: "#9CA3AF", marginBottom: "4px" }}>
+                      DELIVERY ADDRESS
+                    </div>
+                    <div style={{ fontSize: "13px", color: "#374151" }}>{auth.user.address}</div>
+                    <button
+                      onClick={() => navigate("/dashboard/user/profile")}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "#2D6A4F",
+                        fontSize: "12px",
+                        padding: 0,
+                        cursor: "pointer",
+                        fontWeight: "500",
+                        marginTop: "4px",
+                      }}
+                    >
+                      Change address →
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => navigate(auth?.token ? "/dashboard/user/profile" : "/login")}
+                    style={{
+                      width: "100%",
+                      background: "#F8FAF9",
+                      border: "1.5px dashed #52B788",
+                      color: "#2D6A4F",
+                      borderRadius: "10px",
+                      padding: "0.75rem",
+                      marginBottom: "1rem",
+                      cursor: "pointer",
+                      fontSize: "13px",
+                      fontWeight: "500",
+                    }}
+                  >
+                    + {auth?.token ? "Add Delivery Address" : "Login to Checkout"}
+                  </button>
+                )}
+
+                {/* Pay Button */}
+                {cart?.length > 0 && auth?.token && (
+                  <button
+                    onClick={handleRazorpayPayment}
+                    style={{
+                      width: "100%",
+                      background: "#1B4332",
+                      border: "none",
+                      color: "#fff",
+                      borderRadius: "12px",
+                      padding: "0.85rem",
+                      fontSize: "15px",
+                      fontWeight: "600",
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseOver={(e) => e.target.style.background = "#2D6A4F"}
+                    onMouseOut={(e) => e.target.style.background = "#1B4332"}
+                  >
+                    🔒 Pay {totalPrice()}
+                  </button>
+                )}
               </div>
-            ))}
+            </div>
           </div>
-
-          {/* Summary & Payment */}
-          <div className="col-md-5 cart-summary">
-            <h3>Cart Summary</h3>
-            <p>Total | Checkout | Payment</p>
-            <hr />
-            <h4>Total: <b>{totalPrice()}</b></h4>
-
-            {/* Address Section */}
-            {auth?.user?.address ? (
-              <div className="mb-3">
-                <h5>Current Address</h5>
-                <p>{auth.user.address}</p>
-                <button
-                  className="btn btn-outline-warning"
-                  onClick={() => navigate("/dashboard/user/profile")}
-                >
-                  Update Address
-                </button>
-              </div>
-            ) : (
-              <div className="mb-3">
-                <button
-                  className="btn btn-outline-warning"
-                  onClick={() =>
-                    navigate(auth?.token ? "/dashboard/user/profile" : "/login", {
-                      state: "/cart",
-                    })
-                  }
-                >
-                  {auth?.token ? "Add Address" : "Login to Checkout"}
-                </button>
-              </div>
-            )}
-
-            {/* Braintree Payment DropIn */}
-            {/* {clientToken && cart?.length > 0 && auth?.token ? ( 
-              {/* // <div className="mt-3"> */}
-            {/* // <DropIn 
-                  // options={{
-                    */}
-            {/* authorization: clientToken,
-                    // paypal: { flow: "vault" },
-                  // }}
-                  // onInstance={(instance) => setInstance(instance)}
-                // />*/}
-            {/* <button */}
-            {/* // className="btn btn-primary mt-3" */}
-            {/* // onClick={handlePayment} */}
-            {/* // disabled={loading || !instance} */}
-            {/* // > */}
-            {/* // {loading ? "Processing..." : "Make Payment"} */}
-            {/* // </button> */}
-            {/* // </div> */}
-            {/* // ) : ( */}
-            {/* // <div className="text-danger mt-3"> */}
-            {/* // <AiFillWarning size={20} /> Payment system not ready */}
-            {/* // </div> */}
-            {/* // )} */}
-
-            {/* Razorpay Payment Button */}
-            {cart?.length > 0 && auth?.token ? (
-              <button
-                className="btn btn-checkout"
-                onClick={handleRazorpayPayment}
-              >
-                Make Payment
-              </button>
-            ) : (
-              <div className="text-danger mt-3">
-                Please login or add items to cart to proceed.
-              </div>
-            )}
-
-          </div>
-        </div>
+        )}
       </div>
     </Layout>
   );
 };
 
 export default CartPage;
-
-
-
-

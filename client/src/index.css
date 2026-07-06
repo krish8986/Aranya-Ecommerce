@@ -1,3 +1,31 @@
+:root {
+  --primary: #2D6A4F;
+  --primary-light: #52B788;
+  --primary-dark: #1B4332;
+  --accent: #95D5B2;
+  --background: #F8FAF9;
+  --white: #FFFFFF;
+  --text-dark: #1A1A1A;
+  --text-muted: #6B7280;
+  --border: #E5E7EB;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 10px 25px -3px rgba(45, 106, 79, 0.2);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-dark);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400&display=swap");
 
 * {
@@ -38,10 +66,12 @@
   margin-right: 10px;
   margin-top: 4px;
 }
+
 .search-form input {
   border: none;
   border-radius: 0;
 }
+
 .search-form button {
   background-color: #000000;
   border-radius: 0;
@@ -54,12 +84,12 @@
 .footer {
   color: white;
   padding: 25px;
-  background: #000000; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #434343,
-    #000000
-  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: #000000;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right,
+      #434343,
+      #000000);
+  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #434343, #000000);
 }
 
@@ -73,6 +103,7 @@
   color: #ffefba;
   border-bottom: 1px solid #ffefba;
 }
+
 /* =================================
 ======== page not found css ======= */
 .pnf {
@@ -99,10 +130,12 @@
   padding: 10px;
   margin-top: 10px;
 }
+
 .pnf-btn:hover {
   background-color: black;
   color: white;
 }
+
 /* ========================================= */
 /* =========contact us ========= */
 .contactus {
@@ -125,10 +158,12 @@
   font-size: 24px;
   text-transform: uppercase;
 }
+
 .cat-btn:hover {
   background-color: #434343;
   color: white;
 }
+
 /* ================
 ====dashboard
 =================== */
@@ -138,7 +173,7 @@
 }
 
 /* .dark-mode .dashboard, .dashboard-menu h4 { */
-  /* color:green; */
+/* color:green; */
 /* } */
 
 .dashboard-menu h4 {
@@ -150,4 +185,45 @@
 .card-img-top {
   width: 100%;
   object-fit: cover;
+}
+
+/* ===== DARK MODE FIXES ===== */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #1E293B !important;
+  color: #E2E8F0 !important;
+  border-color: #334155 !important;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #64748B !important;
+}
+
+body.dark-mode input:focus,
+body.dark-mode textarea:focus {
+  border-color: #52B788 !important;
+  background-color: #1E293B !important;
+}
+
+/* Login/Register card dark mode */
+body.dark-mode .login-card,
+body.dark-mode .register-card {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+}
+
+body.dark-mode label {
+  color: #94A3B8 !important;
+}
+
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+  color: #E2E8F0 !important;
+}
+
+body.dark-mode p {
+  color: #94A3B8 !important;
 }

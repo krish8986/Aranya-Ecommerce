@@ -4,17 +4,19 @@ import Layout from "./../../components/Layouts/Layout";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
 import moment from "moment";
+import { io } from "socket.io-client";
+import toast from "react-hot-toast";
 
+const socket = io("http://localhost:8000");
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
+
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("/api/v1/auth/orders", {
-        headers: {
-    Authorization: auth?.token
-  }
+      const { data } = await axios.get("/api/v1/orders/Orders", {
+        headers: { Authorization: auth?.token },
       });
       setOrders(data);
     } catch (error) {
@@ -25,64 +27,134 @@ const Orders = () => {
   useEffect(() => {
     if (auth?.token) getOrders();
   }, [auth?.token]);
+
+  useEffect(() => {
+    socket.on("order_status_update", (data) => {
+      toast.success(`📦 ${data.message}`);
+      getOrders();
+    });
+    return () => socket.off("order_status_update");
+  }, []);
+
+  const statusColor = {
+    "Not Process": "#F59E0B",
+    "Processing": "#3B82F6",
+    "Shipped": "#8B5CF6",
+    "deliverd": "#10B981",
+    "cancel": "#EF4444",
+  };
+
   return (
-    <Layout title={"Your Orders"}>
-      <div className="container-flui p-3 m-3 dashboard">
-        <div className="row">
+    <Layout title={"My Orders | Aranya"}>
+      <div className="container py-5">
+        <div className="row g-4">
           <div className="col-md-3">
             <UserMenu />
           </div>
           <div className="col-md-9">
-            <h1 className="text-center">All Orders</h1>
-            {orders?.map((o, i) => {
-              return (
-                <div className="border shadow">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Buyer</th>
-                        <th scope="col"> date</th>
-                        <th scope="col">Payment</th>
-                        <th scope="col">Quantity</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{i + 1}</td>
-                        <td>{o?.status}</td>
-                        <td>{o?.buyer?.name}</td>
-                        <td>{moment(o?.createAt).fromNow()}</td>
-                        <td>{o?.payment.success ? "Success" : "Failed"}</td>
-                        <td>{o?.products?.length}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div className="container">
-                    {o?.products?.map((p, i) => (
-                      <div className="row mb-2 p-3 card flex-row" key={p._id}>
-                        <div className="col-md-4">
-                          <img
-                            src={`/api/v1/product/product-photo/${p._id}`}
-                            className="card-img-top"
-                            alt={p.name}
-                            width="100px"
-                            height={"100px"}
-                            loading="lazy"
-                          />
+            <h4 style={{ color: "#1B4332", fontWeight: "700", marginBottom: "1.5rem" }}>
+              📦 My Orders
+            </h4>
+
+            {orders.length === 0 ? (
+              <div style={{
+                background: "#fff",
+                borderRadius: "16px",
+                padding: "3rem",
+                textAlign: "center",
+                border: "1px solid #E9F5EE",
+              }}>
+                <div style={{ fontSize: "50px", marginBottom: "1rem" }}>📭</div>
+                <h5 style={{ color: "#6B7280" }}>No orders yet</h5>
+                <p style={{ color: "#9CA3AF", fontSize: "13px" }}>Your orders will appear here</p>
+              </div>
+            ) : (
+              orders.map((o, i) => (
+                <div
+                  key={o._id}
+                  style={{
+                    background: "#fff",
+                    borderRadius: "16px",
+                    padding: "1.25rem",
+                    marginBottom: "1rem",
+                    border: "1px solid #E9F5EE",
+                    boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  {/* Order Header */}
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "0.5rem",
+                    marginBottom: "1rem",
+                    paddingBottom: "0.75rem",
+                    borderBottom: "1px solid #E9F5EE",
+                  }}>
+                    <div>
+                      <span style={{ fontSize: "12px", color: "#9CA3AF" }}>Order #{i + 1}</span>
+                      <div style={{ fontSize: "13px", color: "#374151", fontWeight: "500" }}>
+                        {moment(o?.createdAt).fromNow()}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <span style={{
+                        background: o?.payment?.status === "Success" ? "#ECFDF5" : "#FEF2F2",
+                        color: o?.payment?.status === "Success" ? "#10B981" : "#EF4444",
+                        padding: "3px 10px",
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: "500",
+                      }}>
+                        {o?.payment?.status === "Success" ? "✅ Paid" : "❌ Failed"}
+                      </span>
+                      <span style={{
+                        background: "#F0FDF4",
+                        color: statusColor[o?.status] || "#6B7280",
+                        padding: "3px 10px",
+                        borderRadius: "20px",
+                        fontSize: "12px",
+                        fontWeight: "500",
+                        border: `1px solid ${statusColor[o?.status] || "#E5E7EB"}`,
+                      }}>
+                        {o?.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Products */}
+                  {o?.products?.map((p) => (
+                    <div
+                      key={p._id}
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                        padding: "0.75rem 0",
+                        borderBottom: "1px solid #F3F4F6",
+                      }}
+                    >
+                      <img
+                        src={p?.photo?.url || `/api/v1/product/product-photo/${p._id}`}
+                        alt={p.name}
+                        style={{ width: "65px", height: "65px", objectFit: "cover", borderRadius: "10px" }}
+                        loading="lazy"
+                      />
+                      <div>
+                        <div style={{ fontWeight: "600", fontSize: "14px", color: "#1A1A1A" }}>{p.name}</div>
+                        <div style={{ fontSize: "12px", color: "#6B7280", marginTop: "2px" }}>
+                          {p.description?.substring(0, 40)}...
                         </div>
-                        <div className="col-md-8">
-                          <p>{p.name}</p>
-                          <p>{p.description.substring(0, 30)}</p>
-                          <p>Price : {p.price}</p>
+                        <div style={{ color: "#2D6A4F", fontWeight: "700", fontSize: "14px", marginTop: "4px" }}>
+                          ₹{p.price?.toLocaleString()}
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              );
-            })}
+              ))
+            )}
           </div>
         </div>
       </div>

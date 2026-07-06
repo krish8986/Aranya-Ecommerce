@@ -17,11 +17,13 @@ import {
   createRazorpayOrder,
   verifyRazorpayPayment,
   razorpayOrderController,
-  razorpayVerifyController
-
+  razorpayVerifyController,
+  addReviewController,
+  getReviewsController,
 } from "../controllers/productController.js";
-import formidable from "express-formidable";
+// import formidable from "express-formidable";
 import { requireSignIn, isAdmin } from "../middlewares/authMiddleware.js";
+import { upload } from "../config/cloudinary.js";
 
 const router = express.Router();
 
@@ -30,15 +32,14 @@ router.post(
   "/create-product",
   requireSignIn,
   isAdmin,
-  formidable(),
+  upload.single("photo"),
   createProductController
 );
-//routes
 router.put(
   "/update-product/:pid",
   requireSignIn,
   isAdmin,
-  formidable(),
+  upload.single("photo"),
   updateProductController
 );
 
@@ -72,14 +73,6 @@ router.get("/related-product/:pid/:cid", relatedProductController);
 //category wise product
 router.get("/product-category/:slug", productCategoryController);
 
-//payments routes
-//token
-// router.get("/braintree/token", braintreeTokenController);
-
-//payments
-// router.post("/braintree/payment", requireSignIn, brainTreePaymentController);
-
-
 //payment--
 
 router.post("/razorpay/create-order", requireSignIn, createRazorpayOrder);
@@ -88,5 +81,8 @@ router.post("/razorpay/verify", requireSignIn, verifyRazorpayPayment);
 router.post("/razorpay/order", razorpayOrderController);
 router.post("/razorpay/verify", razorpayVerifyController);
 
+// Reviews
+router.post("/review/:pid", requireSignIn, addReviewController);
+router.get("/reviews/:pid", getReviewsController);
 
 export default router;
