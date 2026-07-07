@@ -66,7 +66,10 @@ const HomePage = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
+      // const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`
+      );
       setProducts((prev) => [...prev, ...data.products]);
       setLoading(false);
     } catch (error) {
@@ -95,7 +98,14 @@ const HomePage = () => {
 
   const filterProduct = async () => {
     try {
-      const { data } = await axios.post("/api/v1/product/product-filters", { checked, radio });
+      // const { data } = await axios.post("/api/v1/product/product-filters", { checked, radio });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product/product-filters`,
+        {
+          checked,
+          radio,
+        }
+      );
       setProducts(data?.products);
       setLoading(false);
     } catch (error) {
@@ -153,7 +163,12 @@ const HomePage = () => {
                 <div className="col-6 col-md-4 col-lg-3" key={p._id}>
                   <div className="card h-100">
                     <img
-                      src={p?.photo?.url || `/api/v1/product/product-photo/${p._id}`}
+                      // src={p?.photo?.url || `/api/v1/product/product-photo/${p._id}`}
+                      src={
+                        p?.photo?.url
+                          ? p.photo.url
+                          : `${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`
+                      }
                       className="card-img-top"
                       alt={p.name}
                       loading="lazy"
