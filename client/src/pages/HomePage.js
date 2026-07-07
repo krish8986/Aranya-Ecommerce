@@ -25,7 +25,8 @@ const HomePage = () => {
 
   const getAllCategory = async () => {
     try {
-      const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      // const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await api.get("/api/v1/category/get-category");
       if (data?.success) setCategories(data?.category);
     } catch (error) {
       console.log(error);
@@ -35,7 +36,8 @@ const HomePage = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
+      // const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
+      const { data } = await api.get("/api/v1/product/product-list/" + page);
       setProducts(data.products);
       setLoading(false);
     } catch (error) {
@@ -46,7 +48,8 @@ const HomePage = () => {
 
   const getTotal = async () => {
     try {
-      const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
+      // const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
+      const { data } = await api.get("/api/v1/product/product-count");
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
@@ -69,7 +72,7 @@ const HomePage = () => {
       setLoading(true);
       // const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
       const { data } = await api.get(
-        `${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`
+        `/api/v1/product/product-list/${page}`
       );
       setProducts((prev) => [...prev, ...data.products]);
       setLoading(false);
@@ -101,7 +104,7 @@ const HomePage = () => {
     try {
       // const { data } = await axios.post("/api/v1/product/product-filters", { checked, radio });
       const { data } = await api.post(
-        `${process.env.REACT_APP_API}/api/v1/product/product-filters`,
+        "/api/v1/product/product-filters",
         {
           checked,
           radio,
