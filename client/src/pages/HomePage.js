@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
 import { useCart } from "../context/cart";
-import axios from "axios";
+// import axios from "axios";
+import api from "../utils/api";
 import toast from "react-hot-toast";
 import Layout from "./../components/Layouts/Layout";
 import { AiOutlineReload } from "react-icons/ai";
@@ -24,7 +25,7 @@ const HomePage = () => {
 
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
+      const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data?.success) setCategories(data?.category);
     } catch (error) {
       console.log(error);
@@ -34,7 +35,7 @@ const HomePage = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
+      const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`);
       setProducts(data.products);
       setLoading(false);
     } catch (error) {
@@ -45,7 +46,7 @@ const HomePage = () => {
 
   const getTotal = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
+      const { data } = await api.get(`${process.env.REACT_APP_API}/api/v1/product/product-count`);
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
@@ -67,7 +68,7 @@ const HomePage = () => {
     try {
       setLoading(true);
       // const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
-      const { data } = await axios.get(
+      const { data } = await api.get(
         `${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`
       );
       setProducts((prev) => [...prev, ...data.products]);
@@ -99,7 +100,7 @@ const HomePage = () => {
   const filterProduct = async () => {
     try {
       // const { data } = await axios.post("/api/v1/product/product-filters", { checked, radio });
-      const { data } = await axios.post(
+      const { data } = await api.post(
         `${process.env.REACT_APP_API}/api/v1/product/product-filters`,
         {
           checked,
