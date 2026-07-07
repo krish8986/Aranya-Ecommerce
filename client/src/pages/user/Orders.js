@@ -7,7 +7,8 @@ import moment from "moment";
 import { io } from "socket.io-client";
 import toast from "react-hot-toast";
 
-const socket = io("http://localhost:8000");
+// const socket = io("http://localhost:8000");
+const socket = io(process.env.REACT_APP_API);
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
