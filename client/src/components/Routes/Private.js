@@ -22,4 +22,3 @@ export default function PrivateRoute() {
 
   return ok ? <Outlet /> : <Spinner />;
 }
-
