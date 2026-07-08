@@ -140,34 +140,51 @@ export const getSingleProductController = async (req, res) => {
 
 // ======================= PRODUCT PHOTO =======================
 
+// export const productPhotoController = async (req, res) => {
+// try {
+// const { pid } = req.params;
+// 
+// if (!pid || pid === "undefined") {
+// return res.status(400).send({
+// success: false,
+// message: "Invalid product ID",
+// });
+// }
+// 
+// const product = await productModel.findById(pid).select("photo");
+// 
+// if (product?.photo?.url) {
+// return res.redirect(product.photo.url);
+// }
+// 
+// res.status(404).send({
+// success: false,
+// message: "Photo not found",
+// });
+// } catch (error) {
+// console.error(error);
+// res.status(500).send({
+// success: false,
+// message: "Error fetching product photo",
+// error,
+// });
+// }
+// };
+
 export const productPhotoController = async (req, res) => {
   try {
     const { pid } = req.params;
-
     if (!pid || pid === "undefined") {
-      return res.status(400).send({
-        success: false,
-        message: "Invalid product ID",
-      });
+      return res.status(400).send({ success: false, message: "Invalid product ID" });
     }
-
     const product = await productModel.findById(pid).select("photo");
-
     if (product?.photo?.url) {
-      return res.redirect(product.photo.url);
+      return res.status(200).json({ url: product.photo.url });
     }
-
-    res.status(404).send({
-      success: false,
-      message: "Photo not found",
-    });
+    res.status(404).send({ success: false, message: "Photo not found" });
   } catch (error) {
     console.error(error);
-    res.status(500).send({
-      success: false,
-      message: "Error fetching product photo",
-      error,
-    });
+    res.status(500).send({ success: false, message: "Error fetching photo", error });
   }
 };
 

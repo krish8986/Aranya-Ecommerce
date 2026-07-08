@@ -128,6 +128,21 @@ if (process.env.NODE_ENV === "production") {
 const PORT = process.env.PORT || 8000;
 
 // run listen — httpServer instead of app
+// httpServer.listen(PORT, () => {
+// logger.info(`Server Running on ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
+// });
+
 httpServer.listen(PORT, () => {
-  logger.info(`Server Running on ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
+  logger.info(`Server Running on ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
+
+// Keep Railway server alive
+if (process.env.NODE_ENV === "production") {
+  import("https").then(({ default: https }) => {
+    setInterval(() => {
+      https.get("https://aranya-ecommerce-production.up.railway.app", (res) => {
+        console.log(`Keep-alive ping: ${res.statusCode}`);
+      }).on("error", () => { });
+    }, 14 * 60 * 1000);
+  });
+}
