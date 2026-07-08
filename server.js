@@ -30,9 +30,21 @@ const app = express();
 const httpServer = createServer(app);
 
 // Socket.io setup
+// const io = new Server(httpServer, {
+// cors: {
+// origin: process.env.CLIENT_URL || "http://localhost:3000",
+// methods: ["GET", "POST"],
+// credentials: true,
+// },
+// });
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://aranya-ecommerce-self.vercel.app",
+      /\.vercel\.app$/,
+    ],
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -52,7 +64,15 @@ export { io };
 
 // middlewares
 app.set("trust proxy", 1);
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://aranya-ecommerce-self.vercel.app",
+    /\.vercel\.app$/,
+  ],
+  credentials: true,
+}));
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -77,13 +97,15 @@ const authLimiter = rateLimit({
 });
 
 // routes
+app.use("/api/v1/auth/login", authLimiter);
+app.use("/api/v1/auth/register", authLimiter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use('/api/v1/payment', paymentRoute);
 app.use("/api/v1/orders", orderRoutes);
-app.use("/api/v1/auth/login", authLimiter);
-app.use("/api/v1/auth/register", authLimiter);
+// app.use("/api/v1/auth/login", authLimiter);
+// app.use("/api/v1/auth/register", authLimiter);
 
 // rest api
 app.get("/", (req, res) => {
