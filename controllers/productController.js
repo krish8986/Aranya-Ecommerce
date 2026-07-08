@@ -84,7 +84,7 @@ export const getProductController = async (req, res) => {
     const products = await productModel
       .find({ isDeleted: false })
       .populate("category")
-      .select("-photo")
+      .select("name description price category photo slug quantity")
       .limit(12)
       .sort({ createdAt: -1 });
 
@@ -113,7 +113,7 @@ export const getSingleProductController = async (req, res) => {
   try {
     const product = await productModel
       .findOne({ slug: req.params.slug })
-      .select("-photo")
+      .select("name description price category photo slug quantity")
       .populate("category");
 
     if (!product) {
@@ -306,7 +306,7 @@ export const productListController = async (req, res) => {
     // Not in cache — fetch from MongoDB
     const products = await productModel
       .find({ isDeleted: false })
-      .select("-photo")
+      .select("-photo.data")
       .skip((page - 1) * perPage)
       .limit(perPage)
       .sort({ createdAt: -1 });
@@ -340,7 +340,7 @@ export const searchProductController = async (req, res) => {
           { description: { $regex: keyword, $options: "i" } },
         ],
       })
-      .select("-photo");
+      .select("name description price category photo slug quantity");
 
     res.status(200).send(results);
   } catch (error) {
@@ -355,7 +355,7 @@ export const relatedProductController = async (req, res) => {
     const { pid, cid } = req.params;
     const products = await productModel
       .find({ category: cid, _id: { $ne: pid } })
-      .select("-photo")
+      .select("name description price category photo slug quantity")
       .limit(3)
       .populate("category");
 
