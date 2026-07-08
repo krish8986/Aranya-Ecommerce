@@ -54,7 +54,8 @@ export const createOrderController = async (req, res) => {
 export const getUserOrdersController = async (req, res) => {
   try {
     const orders = await OrderModel.find({ buyer: req.user._id })
-      .populate("products", "-photo")
+      // .populate("products", "-photo")
+      .populate("products", "name description price photo")
       .populate("buyer", "name email");
 
     res.json(orders);
@@ -72,7 +73,8 @@ export const getUserOrdersController = async (req, res) => {
 export const getAllOrdersController = async (req, res) => {
   try {
     const orders = await OrderModel.find({})
-      .populate("products", "-photo")
+      // .populate("products", "-photo")
+      .populate("products", "name description price photo")
       .populate("buyer", "name email");
 
     res.json(orders);

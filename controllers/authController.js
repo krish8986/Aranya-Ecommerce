@@ -104,7 +104,13 @@ export const resendOTPController = async (req, res) => {
     user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    await sendOTPEmail(user.email, user.name, otp);
+    // await sendOTPEmail(user.email, user.name, otp);
+    try {
+      await sendOTPEmail(user.email, user.name, otp);
+    } catch (emailError) {
+      console.error("OTP email failed but user registered:", emailError);
+      // User registered successfully even if email fails
+    }
 
     res.status(200).send({ success: true, message: "OTP resent successfully" });
   } catch (error) {

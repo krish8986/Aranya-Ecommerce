@@ -339,6 +339,7 @@ export const searchProductController = async (req, res) => {
           { name: { $regex: keyword, $options: "i" } },
           { description: { $regex: keyword, $options: "i" } },
         ],
+        isDeleted: false,
       })
       .select("name description price category photo slug quantity");
 

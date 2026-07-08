@@ -90,7 +90,7 @@ app.use(limiter);
 // Strict limiter for auth routes (brute-force protection)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // sirf 5 attempts
+  max: 20, // sirf 20 attempts
   message: { success: false, message: "Too many attempts, please try again after 15 minutes" },
   standardHeaders: true,
   legacyHeaders: false,
