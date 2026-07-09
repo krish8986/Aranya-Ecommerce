@@ -28,7 +28,8 @@ export const registerController = async (req, res) => {
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    // const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    const otpExpiry = new Date(Date.now() + 30 * 60 * 1000);
 
     const user = await new userModel({
       name,
@@ -42,13 +43,26 @@ export const registerController = async (req, res) => {
       isVerified: false,
     }).save();
 
-    await sendOTPEmail(user.email, user.name, otp);
+    // await sendOTPEmail(user.email, user.name, otp);
+
+    // res.status(201).send({
+    //   success: true,
+    //   message: "Registration successful! Please verify your email with the OTP sent.",
+    //   userId: user._id,
+    // });
+
+    try {
+      await sendOTPEmail(user.email, user.name, otp);
+    } catch (emailErr) {
+      console.error("OTP email failed:", emailErr.message);
+    }
 
     res.status(201).send({
       success: true,
       message: "Registration successful! Please verify your email with the OTP sent.",
       userId: user._id,
     });
+
   } catch (error) {
     console.log(error);
     res.status(500).send({
