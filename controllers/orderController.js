@@ -35,8 +35,8 @@ export const createOrderController = async (req, res) => {
     const populatedOrder = await OrderModel.findById(order._id)
       .populate("products", "name price")
       .populate("buyer", "name email");
-
     await sendOrderConfirmationEmail(
+      // sendOrderConfirmationEmail(
       populatedOrder.buyer.email,
       populatedOrder.buyer.name,
       populatedOrder._id,
@@ -113,6 +113,7 @@ export const updateOrderStatusController = async (req, res) => {
 
     if (status === "delivered") {
       await sendDeliveredEmail(
+        // sendDeliveredEmail(
         populatedOrder.buyer.email,
         populatedOrder.buyer.name,
         populatedOrder._id
