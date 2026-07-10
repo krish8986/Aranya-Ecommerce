@@ -218,42 +218,95 @@ export const loginController = async (req, res) => {
 
 //forgotPasswordController
 
+// export const forgotPasswordController = async (req, res) => {
+// try {
+// const { email, answer, newPassword } = req.body;
+// if (!email) {
+// res.status(400).send({ message: "Emai is required" });
+// }
+// if (!answer) {
+// res.status(400).send({ message: "answer is required" });
+// }
+// if (!newPassword) {
+// res.status(400).send({ message: "New Password is required" });
+// }
+// check
+// const user = await userModel.findOne({ email, answer });
+// validation
+// if (!user) {
+// return res.status(404).send({
+// success: false,
+// message: "Wrong Email Or Answer",
+// });
+// }
+// const hashed = await hashPassword(newPassword);
+// await userModel.findByIdAndUpdate(user._id, { password: hashed });
+// res.status(200).send({
+// success: true,
+// message: "Password Reset Successfully",
+// });
+// } catch (error) {
+// console.log(error);
+// res.status(500).send({
+// success: false,
+// message: "Something went wrong",
+// error,
+// });
+// }
+// };
+
+
 export const forgotPasswordController = async (req, res) => {
   try {
-    const { email, answer, newPassword } = req.body;
-    if (!email) {
-      res.status(400).send({ message: "Emai is required" });
-    }
-    if (!answer) {
-      res.status(400).send({ message: "answer is required" });
-    }
-    if (!newPassword) {
-      res.status(400).send({ message: "New Password is required" });
-    }
-    //check
-    const user = await userModel.findOne({ email, answer });
-    //validation
-    if (!user) {
-      return res.status(404).send({
-        success: false,
-        message: "Wrong Email Or Answer",
+    const { email, answer, newPassword, otp } = req.body;
+
+    if (!email) return res.status(400).send({ success: false, message: "Email is required" });
+
+    const user = await userModel.findOne({ email });
+    if (!user) return res.status(404).send({ success: false, message: "Email not registered" });
+
+    // Step 1 — Verify answer + send OTP
+    if (!otp) {
+      if (!answer) return res.status(400).send({ success: false, message: "Answer is required" });
+      if (user.answer !== answer) return res.status(400).send({ success: false, message: "Wrong answer" });
+
+      const resetOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const otpExpiry = new Date(Date.now() + 30 * 60 * 1000);
+      user.otp = resetOtp;
+      user.otpExpiry = otpExpiry;
+      await user.save();
+
+      try {
+        await sendOTPEmail(user.email, user.name, resetOtp);
+      } catch (e) {
+        console.error("OTP email failed:", e.message);
+      }
+
+      return res.status(200).send({
+        success: true,
+        message: "OTP sent to your email",
+        step: "otp",
       });
     }
+
+    // Step 2 — Verify OTP + reset password
+    if (!newPassword) return res.status(400).send({ success: false, message: "New password required" });
+    if (user.otp !== otp) return res.status(400).send({ success: false, message: "Invalid OTP" });
+    if (new Date() > user.otpExpiry) return res.status(400).send({ success: false, message: "OTP expired" });
+
     const hashed = await hashPassword(newPassword);
-    await userModel.findByIdAndUpdate(user._id, { password: hashed });
-    res.status(200).send({
-      success: true,
-      message: "Password Reset Successfully",
-    });
+    user.password = hashed;
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save();
+
+    res.status(200).send({ success: true, message: "Password Reset Successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).send({
-      success: false,
-      message: "Something went wrong",
-      error,
-    });
+    res.status(500).send({ success: false, message: "Something went wrong", error });
   }
 };
+
 
 //test controller
 export const testController = (req, res) => {
