@@ -53,6 +53,16 @@ export const createProductController = async (req, res) => {
 
     await product.save();
 
+    // Cache invalidate karo taaki fresh products dikhein
+    try {
+      await redis.del("all_products");
+      // Saare pages ka cache clear karo
+      const keys = await redis.keys("products_page_*");
+      if (keys.length > 0) await redis.del(...keys);
+    } catch (cacheErr) {
+      console.error("Cache clear failed:", cacheErr.message);
+    }
+
     res.status(201).send({
       success: true,
       message: "Product created successfully",
@@ -193,6 +203,14 @@ export const productPhotoController = async (req, res) => {
 export const deleteProductController = async (req, res) => {
   try {
     await productModel.findByIdAndUpdate(req.params.pid, { isDeleted: true });
+    // Cache invalidate
+    try {
+      await redis.del("all_products");
+      const keys = await redis.keys("products_page_*");
+      if (keys.length > 0) await redis.del(...keys);
+    } catch (cacheErr) {
+      console.error("Cache clear failed:", cacheErr.message);
+    }
     res.status(200).send({ success: true, message: "Product deleted successfully" });
   } catch (error) {
     console.error(error);
@@ -244,6 +262,15 @@ export const updateProductController = async (req, res) => {
       },
       { new: true }
     );
+
+    // Cache invalidate
+    try {
+      await redis.del("all_products");
+      const keys = await redis.keys("products_page_*");
+      if (keys.length > 0) await redis.del(...keys);
+    } catch (cacheErr) {
+      console.error("Cache clear failed:", cacheErr.message);
+    }
 
     res.status(200).send({
       success: true,
