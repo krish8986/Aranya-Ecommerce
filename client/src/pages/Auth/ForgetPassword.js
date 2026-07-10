@@ -31,7 +31,7 @@ const ForgetPassword = () => {
             setLoading(true);
             const res = await axios.post(
                 `${process.env.REACT_APP_API}/api/v1/auth/forgot-password`,
-                { email, answer, otp, newPassword }
+                { email, answer }
             );
             if (res.data.success) {
                 toast.success("OTP sent to your email!");
@@ -52,7 +52,7 @@ const ForgetPassword = () => {
         try {
             setLoading(true);
             const res = await axios.post(
-                `${process.env.REACT_APP_API}/api/v1/auth/forget-password`,
+                `${process.env.REACT_APP_API}/api/v1/auth/forgot-password`,
                 { email, answer, otp, newPassword }
             );
             if (res.data.success) {
