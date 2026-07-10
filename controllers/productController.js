@@ -99,7 +99,21 @@ export const getProductController = async (req, res) => {
       .sort({ createdAt: -1 });
 
     // Save to Redis with 5 minute expiry
-    await redis.setex("all_products", 300, JSON.stringify(products));
+    // await redis.setex("all_products", 300, JSON.stringify(products));
+    const responseData = {
+      success: true,
+      totalCount: products.length,
+      message: "All products fetched",
+      products,
+    };
+
+    await redis.setex(
+      "all_products",
+      300,
+      JSON.stringify(responseData)
+    );
+
+    res.status(200).send(responseData);
 
     res.status(200).send({
       success: true,
