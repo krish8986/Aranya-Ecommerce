@@ -1395,7 +1395,9 @@ npm test
 
 Watch the complete project walkthrough
 
-👉 Add Loom / YouTube Link Here
+LOOM - https://www.loom.com/share/b15913f724eb4df5bfc9961d48e7d22f
+
+YOUTUBE - https://www.youtube.com/watch?v=src1VjMr3yQ
 
 The demo covers
 
@@ -1590,7 +1592,6 @@ The following features are planned for future releases.
 - Progressive Web App (PWA)
 - Push Notifications
 - Multi-language Support
-- Dark Mode
 - Product Comparison
 - Elasticsearch-based Search
 - Microservices Migration
